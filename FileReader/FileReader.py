@@ -40,16 +40,13 @@ class FileReader(threading.Thread):
         """Reads data from file then calls the callback at a certain frequency."""     
         print('Reading file for simulation...', flush=True)
 
-        try:
-            openMode = 'rb' if self.binary else 'r' 
-            with open(self.fileName, openMode) as csvFile:
-                reader = csv.reader(csvFile, delimiter=',')
-                for row in reader:
-                    extractedRow = row[self.startCSVcolumn:self.endCSVcolumn].copy()
-                    self.dataQueue.append(extractedRow)
-        except Exception as e:
-            print(e)
-            raise
+        openMode = 'rb' if self.binary else 'r' 
+        with open(self.fileName, openMode) as csvFile:
+            reader = csv.reader(csvFile, delimiter=',')
+            for row in reader:
+                extractedRow = row[self.startCSVcolumn:self.endCSVcolumn].copy()
+                self.dataQueue.append(extractedRow)
+
         print('Ready for transmission. Proceeding.')
 
         # Seconds
