@@ -156,16 +156,16 @@ class TestFileReaderFrequency(unittest.TestCase):
         abs_file_path = os.path.join(script_dir, rel_path)
         fileName = script_dir = abs_file_path
 
-        self.correctTransmissionFrequency = 50
+        self.correctTransmissionFrequency = 250
         self.ignoreFirst = True
         
         # Range 0 to 8
         startCSVcolumn = 0
-        endCSVcolumn = 10
+        endCSVcolumn = 8
 
         fileReader = FileReader(self.valid_frequency_callback, fileName, self.correctTransmissionFrequency, startCSVcolumn, endCSVcolumn)
         # Starting time
-        self.lastRecordedTime = time.time()
+        self.lastRecordedTime = time.thread_time_ns()
         fileReader.start()
         fileReader.join()
 
@@ -175,16 +175,16 @@ class TestFileReaderFrequency(unittest.TestCase):
             self.ignoreFirst = False
         else:
             # To pass this test, it needs to be close to frequency
-            currentTime = time.time()
+            currentTimeNs = time.thread_time_ns()
             # Seconds
-            elapsedTime = abs(self.lastRecordedTime - currentTime)
+            elapsedTimeNs = abs(self.lastRecordedTime - currentTimeNs)
             # Ms
-            elapsedTimeMs = elapsedTime * 1000
-            differenceInTime = abs(elapsedTimeMs - self.correctTransmissionFrequency)
+            #elapsedTimeNs = elapsedTime * 1000
+            differenceInTime = abs(elapsedTimeNs - self.correctTransmissionFrequency)
 
-            # Passes if difference less than 5ms
-            self.assertTrue(differenceInTime < 5)
-            self.lastRecordedTime = currentTime
+            # Passes if difference less than 50ms
+            self.assertTrue(differenceInTime < 50000000)
+            self.lastRecordedTime = currentTimeNs
 
 if __name__ == '__main__':
     try:
