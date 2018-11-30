@@ -2,7 +2,8 @@
 
 import csv
 import threading
-from time import sleep, thread_time, time_ns
+import asyncio
+import time
 
 class FileReader(threading.Thread):
     """
@@ -49,35 +50,13 @@ class FileReader(threading.Thread):
 
         print('Ready for transmission. Proceeding.')
 
-        #The nanoseconds to wait
-        desiredTransmissionTime = 1000000000.0/self.transmissionFrequency
+        # Wait time (s)
+        sleepTime = 1/self.transmissionFrequency
 
-        print(len(self.dataQueue))
         for i in range(0, len(self.dataQueue)):
-            transmissionStartTime = time_ns()
-
+            #asyncio.run(self.fetchData(self.dataQueue[i]))
             self.fetchData(self.dataQueue[i])
-
-            transmissionEndTime = time_ns()
-
-            transmissionDuration = transmissionEndTime - transmissionStartTime
-
-            while transmissionDuration < desiredTransmissionTime:
-                sleepTime = ( desiredTransmissionTime - transmissionDuration )
-                sleep(sleepTime/1000000000)
-                transmissionDuration = time_ns() - transmissionStartTime
+            time.sleep(sleepTime)
 
         print('Process complete. Ending simulation.')
         return None
-
-def func(array):
-    #Do Nothing
-    x = 0
-
-def main():
-    fileReader = FileReader(func, "tests/input_data_1.csv", 250, 0, 8)
-    #fileReader.start()
-    fileReader.run()
-
-if __name__ == '__main__':
-    main()

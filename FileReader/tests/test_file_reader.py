@@ -165,7 +165,7 @@ class TestFileReaderFrequency(unittest.TestCase):
 
         fileReader = FileReader(self.valid_frequency_callback, fileName, self.correctTransmissionFrequency, startCSVcolumn, endCSVcolumn)
         # Starting time
-        self.lastRecordedTime = time.thread_time_ns()
+        self.lastRecordedTimeNs = time.perf_counter_ns()
         fileReader.start()
         fileReader.join()
 
@@ -175,16 +175,15 @@ class TestFileReaderFrequency(unittest.TestCase):
             self.ignoreFirst = False
         else:
             # To pass this test, it needs to be close to frequency
-            currentTimeNs = time.thread_time_ns()
+            currentTimeNs = time.perf_counter_ns()
             # Seconds
-            elapsedTimeNs = abs(self.lastRecordedTime - currentTimeNs)
-            # Ms
-            #elapsedTimeNs = elapsedTime * 1000
-            differenceInTime = abs(elapsedTimeNs - self.correctTransmissionFrequency)
+            elapsedTimeNs = abs(self.lastRecordedTimeNs - currentTimeNs)
+            # Ns
+            differenceInTimeNs = abs(elapsedTimeNs - (1e9/(self.correctTransmissionFrequency)))
 
-            # Passes if difference less than 50ms
-            self.assertTrue(differenceInTime < 50000000)
-            self.lastRecordedTime = currentTimeNs
+            # Passes if difference less than 5ms
+            self.assertTrue(differenceInTimeNs < 5000000)
+            self.lastRecordedTimeNs = currentTimeNs
 
 if __name__ == '__main__':
     try:
