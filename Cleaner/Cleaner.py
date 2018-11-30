@@ -1,14 +1,33 @@
 import threading
-from queue import Queue
+import queue
+import time
 
 class Cleaner(threading.Thread):
-    def __init__(self):
+    def __init__(self, nbChannel=8):
         super().__init__()
-
-        self.queue8ChannelsList = Queue(maxsize=10)
-        self.listQChannels = [Queue() for i in range(8)]
+        self.nbChannel = nbChannel
+        self.queue8ChannelsList = queue.Queue(maxsize=10)
+        self.listQChannels = [queue.Queue(maxsize= 1000) for i in range(self.nbChannel)]
 
     def run(self):
-        pass
+        while True:
+            try:
+                self.distributeChannel()
+            except queue.Empty:
+                pass
 
 
+
+
+    def fetchData(self, data):
+        self.queue8ChannelsList.put(data)
+
+    def distributeChannel(self):
+        for index, data in enumerate(self.queue8ChannelsList.get(block=False)):
+            self.listQChannels[index].put(data)
+
+
+
+a = Cleaner()
+
+a.start()
