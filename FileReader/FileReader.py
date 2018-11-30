@@ -13,7 +13,7 @@ class FileReader(threading.Thread):
     """
 
     
-    def __init__(self, fetchData, fileName, transmissionFrequency, startCSVcolumn, endCSVcolumn, binary=False):
+    def __init__(self, fetchData, fileName, startCSVcolumn, endCSVcolumn, transmissionFrequency=100, binary=False):
         #super(FileReader, self).__init__()
         threading.Thread.__init__(self)
         # Callback
