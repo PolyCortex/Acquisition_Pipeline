@@ -1,1 +1,0 @@
-numpy qdarkstyle pygame pyqt pyopengl sklearn matpoltlib serial pynput nibabel
