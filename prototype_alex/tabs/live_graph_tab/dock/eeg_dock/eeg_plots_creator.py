@@ -364,7 +364,7 @@ class EegPlotsCreator:
 
     def create_color_button(self, ch, ch_layout):
         """Create color button to change the color of the line"""
-        color_btn = pg.ColorButton(close_fit=True)
+        color_btn = pg.ColorButton()
         color_btn.setMaximumWidth(17)
         color_btn.setToolTip('Click to change the color of the line')
         color_btn.sigColorChanged.connect(partial(self.change_line_color, ch))
