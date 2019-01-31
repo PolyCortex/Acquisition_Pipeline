@@ -46,6 +46,7 @@ class FileReader(threading.Thread):
             reader = csv.reader(csvFile, delimiter=',')
             for row in reader:
                 extractedRow = row[self.startCSVcolumn:self.endCSVcolumn].copy()
+                extractedRow = list(map(float, extractedRow))
                 self.dataQueue.append(extractedRow)
 
         print('Ready for transmission. Proceeding.')
