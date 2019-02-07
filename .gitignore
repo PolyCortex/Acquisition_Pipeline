@@ -190,3 +190,4 @@ fabric.properties
 
 # VSCode
 .vscode
+\.idea/
