@@ -3,6 +3,7 @@ import threading
 from FileReader.FileReader import FileReader
 import queue
 import numpy
+import time
 import scipy.signal as filter
 
 class Filter(threading.Thread):
@@ -14,15 +15,35 @@ class Filter(threading.Thread):
 
     def __init__(self, outputQueue):
         super().__init__()
+        self._input = queue.Queue()
         self._output = outputQueue  # de type queue.Queue
         self._rawData = numpy.zeros((self._TransmisionFrequency, self._NbChannel))
 
     def run(self):
-        fileReader = FileReader(self.AddNewData, fileName="testBCI.csv", transmissionFrequency=800, startCSVcolumn=0, endCSVcolumn = 8)
+        fileReader = FileReader(self.AddNewData, fileName="testBCI.csv", transmissionFrequency=250, startCSVcolumn=0, endCSVcolumn = 8)
         fileReader.start()
-        fileReader.join()
+
+        ctr = 0;
+        now = time.time()
+
+        while True:
+            newData = self._input.get()
+
+            self.FilterNewData(newData)
+            ctr += 1
+
+            if ctr == 250:
+                after = time.time()
+                print(after - now)
+                now = time.time()
+                ctr = 0
+
+        # fileReader.join()
 
     def AddNewData(self, newData):
+        self._input.put(newData)
+
+    def FilterNewData(self, newData):
         # TODO: checker ce que open bci envoi pour le comprendre
         self._rawData = self._rawData[:-1]
         newData = numpy.asarray(newData)
