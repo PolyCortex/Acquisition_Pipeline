@@ -54,9 +54,10 @@ class FileReader(threading.Thread):
         sleepTime = 1/self.transmissionFrequency
 
         for i in range(0, len(self.dataQueue)):
-            #asyncio.run(self.fetchData(self.dataQueue[i]))
+            before = time.time()
             self.fetchData(self.dataQueue[i])
-            time.sleep(sleepTime)
+            after = time.time()
+            time.sleep(sleepTime - (after - before))
 
         print('Process complete. Ending simulation.')
         return None
