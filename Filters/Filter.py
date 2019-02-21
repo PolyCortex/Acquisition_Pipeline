@@ -19,6 +19,13 @@ class Filter(threading.Thread):
         self._output = outputQueue  # de type queue.Queue
         self._rawData = numpy.zeros((self._TransmisionFrequency, self._NbChannel))
 
+        highpass = self.WnTransform(self._HighPassFrequency)
+        lowpass = self.WnTransform(self._LowPassFrequency)
+        [b, a] = filter.butter(2, [highpass, lowpass], 'bandpass')
+
+        self._b = b
+        self._a = a
+
     def run(self):
         fileReader = FileReader(self.AddNewData, fileName="testBCI.csv", transmissionFrequency=250, startCSVcolumn=0, endCSVcolumn = 8)
         fileReader.start()
@@ -44,7 +51,6 @@ class Filter(threading.Thread):
         self._input.put(newData)
 
     def FilterNewData(self, newData):
-        # TODO: checker ce que open bci envoi pour le comprendre
         self._rawData = self._rawData[:-1]
         newData = numpy.asarray(newData)
         self._rawData = numpy.vstack((newData, self._rawData))
@@ -52,13 +58,11 @@ class Filter(threading.Thread):
         self._output.put(_filteredData)
 
     def ApplyFilter(self):
-        highpass = self.WnTransform(self._HighPassFrequency)
-        lowpass = self.WnTransform(self._LowPassFrequency)
-        [b, a] = filter.butter(2, [highpass, lowpass], 'bandpass') # Pourrait sauvegarder ces donnees la dans l'objet
+
         filteredReading = []
 
         for i in range(0, self._NbChannel):
-            filteredChannel = filter.filtfilt(b, a, self._rawData[:, i])
+            filteredChannel = filter.filtfilt(self._b, self._a, self._rawData[:, i])
             filteredReading.append(filteredChannel[0])
 
         return filteredReading
