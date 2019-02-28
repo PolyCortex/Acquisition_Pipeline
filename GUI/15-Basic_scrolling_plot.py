@@ -25,6 +25,5 @@ timer.start(50)
 
 
 if __name__ == '__main__':
-
     QtGui.QApplication.instance().exec_()
 
