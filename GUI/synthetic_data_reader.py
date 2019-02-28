@@ -6,7 +6,7 @@ import threading
 
 
 class CreateSyntheticData(threading.Thread):
-    def __init__(self, callback, q_len=1250, read_freq=250, N_CH=8):
+    def __init__(self, callback, q_len=4000, read_freq=2000, N_CH=8):
         super().__init__()
         self.callback = callback
         self.q_len = q_len
@@ -15,10 +15,14 @@ class CreateSyntheticData(threading.Thread):
         self.i = 0
         self.read_period = 1/read_freq
         # signal
-        amplitude = 1000
-        omega = 10
+        amplitude1 = 10
+        amplitude2 = 1
+        omega1 = 1
+        omega2 = 30
         t = np.linspace(0, 2 * pi, q_len)
-        self.s = amplitude * sin(omega*t)
+
+        self.s1 = amplitude1 * sin(omega1*t)
+        self.s2 = amplitude2 * sin(omega2*t)
 
     def run(self):
         self.create_synthetic_data()
@@ -28,7 +32,7 @@ class CreateSyntheticData(threading.Thread):
             if self.i == self.q_len:
                 self.i = 0
 
-            one_value = self.s[self.i]
+            one_value = self.s1[self.i] + self.s2[self.i]
             all_ch_values = [one_value for _ in range(self.N_CH)]
             self.callback(all_ch_values)
 

@@ -25,7 +25,7 @@ class PlotWidget(QWidget):
         all_curves = []
         all_q = []
         for _ in range(8):
-            q = deque(np.zeros(1250), maxlen=1250)
+            q = deque(np.zeros(4000), maxlen=4000)
             all_q.append(q)
             curve = self.create_curve(q)
             all_curves.append(curve)
