@@ -7,13 +7,15 @@ import time
 
 class FileReader(threading.Thread):
     """
-    Class used to read a CSV format file and transmit data at a certain transmission frequency using callbacks.
+     Class used to read a CSV format file and transmit data at a certain
+     transmission frequency using callbacks.
     
-    Purpose is to simulate real-time transmission, test filters and more.
+     Purpose is to simulate real-time transmission, test filters and more.
     """
 
     
-    def __init__(self, fetchData, fileName, startCSVcolumn, endCSVcolumn, transmissionFrequency=100, binary=False):
+    def __init__(self, fetchData, fileName, startCSVcolumn, endCSVcolumn,
+                 transmissionFrequency=100, binary=False):
         #super(FileReader, self).__init__()
         threading.Thread.__init__(self)
         # Callback
