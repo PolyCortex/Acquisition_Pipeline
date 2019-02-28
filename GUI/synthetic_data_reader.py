@@ -6,10 +6,11 @@ import threading
 
 
 class CreateSyntheticData(threading.Thread):
-    def __init__(self, callback, q_len=1250, read_freq=250):
+    def __init__(self, callback, q_len=1250, read_freq=250, N_CH=8):
         super().__init__()
         self.callback = callback
         self.q_len = q_len
+        self.N_CH = N_CH
 
         self.i = 0
         self.read_period = 1/read_freq
@@ -28,7 +29,8 @@ class CreateSyntheticData(threading.Thread):
                 self.i = 0
 
             one_value = self.s[self.i]
-            self.callback(one_value)
+            all_ch_values = [one_value for _ in range(self.N_CH)]
+            self.callback(all_ch_values)
 
             self.i += 1
             sleep(self.read_period)

@@ -1,6 +1,7 @@
 class DataCollector:
-    def __init__(self, q):
-        self.q = q
+    def __init__(self, all_q):
+        self.all_q = all_q
 
-    def fetch_data(self, signal):
-        self.q.append(signal)
+    def fetch_data(self, all_ch_signal):
+        for q, ch_signal in zip(self.all_q, all_ch_signal):
+            q.append(ch_signal)

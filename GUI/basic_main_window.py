@@ -18,14 +18,28 @@ class MainWindow(QMainWindow):
 class PlotWidget(QWidget):
     def __init__(self):
         super().__init__()
-        layout = QGridLayout(self)
-        self.q = deque(np.zeros(1250), maxlen=1250)
+        self.layout = QGridLayout(self)
+        self.all_curves, self.all_q = self.create_all_curves_and_all_q()
+
+    def create_all_curves_and_all_q(self):
+        all_curves = []
+        all_q = []
+        for _ in range(8):
+            q = deque(np.zeros(1250), maxlen=1250)
+            all_q.append(q)
+            curve = self.create_curve(q)
+            all_curves.append(curve)
+        return all_curves, all_q
+
+    def create_curve(self, q):
         plot = pg.PlotWidget()
-        layout.addWidget(plot)
-        self.curve = plot.plot(self.q)
+        self.layout.addWidget(plot)
+        curve = plot.plot(q)
+        return curve
 
     def update(self):
-        self.curve.setData(self.q)
+        for q, curve in zip(self.all_q, self.all_curves):
+            curve.setData(q)
 
 
 
