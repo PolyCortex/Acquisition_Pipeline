@@ -13,10 +13,10 @@ class Filter(threading.Thread):
     _LowPassFrequency = 50
     _HighPassFrequency = 10
 
-    def __init__(self, outputQueue):
+    def __init__(self, outputQueues):
         super().__init__()
         self._input = queue.Queue()
-        self._output = outputQueue  # de type queue.Queue
+        self._output = outputQueues  # de type queue.Queue
         self._rawData = numpy.zeros((self._TransmisionFrequency, self._NbChannel))
 
         highpass = self.WnTransform(self._HighPassFrequency)
@@ -55,7 +55,8 @@ class Filter(threading.Thread):
         newData = numpy.asarray(newData)
         self._rawData = numpy.vstack((newData, self._rawData))
         _filteredData = self.ApplyFilter()
-        self._output.put(_filteredData)
+        for outQueue, channel in zip(self._output, _filteredData):
+            outQueue.append(channel)
 
     def ApplyFilter(self):
 
@@ -73,10 +74,3 @@ class Filter(threading.Thread):
     def stop(self):
 
         return
-
-
-a = queue.Queue()
-monFiltre = Filter(a)
-
-monFiltre.start()
-monFiltre.join()
